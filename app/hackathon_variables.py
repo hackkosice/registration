@@ -12,7 +12,7 @@ TIME_ZONE = 'CET'
 HACKATHON_DESCRIPTION = 'Hackathon in Kosice, Slovakia: 24 hours, 250 hackers, 1 spirit. ' \
                         'Come to meet the best hackers, eat the best free food, invent something groundbreaking.'
 # Domain where application is deployed, can be set by env variable
-HACKATHON_DOMAIN = os.environ.get('DOMAIN', 'apply-dev.hackkosice.com')
+HACKATHON_DOMAIN = os.environ.get('DOMAIN', 'apply.hackkosice.com')
 # Hackathon contact email: where should all hackers contact you. It will also be used as a sender for all emails
 HACKATHON_CONTACT_EMAIL = 'contact@hackkosice.com'
 # Hackathon logo url, will be used on all emails

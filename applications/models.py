@@ -27,6 +27,7 @@ APP_CONFIRMED_ONLINE = 'CO'
 APP_CANCELLED = 'X'
 APP_ATTENDED = 'A'
 APP_EXPIRED = 'E'
+APP_INVITED_IN_MARCH = 'WM'
 
 STATUS = [
     (APP_PENDING, 'Under review'),
@@ -39,6 +40,7 @@ STATUS = [
     (APP_CANCELLED, 'Cancelled'),
     (APP_ATTENDED, 'Attended'),
     (APP_EXPIRED, 'Expired'),
+    (APP_INVITED_IN_MARCH, 'Invited in March'),
 ]
 
 MALE = 'M'

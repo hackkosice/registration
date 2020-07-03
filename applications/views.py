@@ -85,7 +85,10 @@ class ConfirmApplication(LoginRequiredMixin, UserPassesTestMixin, View):
         application = models.Application.objects.get(user=request.user)
         msg = None
         if application.can_confirm():
-            msg = emails.create_confirmation_email(application, self.request)
+            if application.is_invited_online():
+                msg = emails.create_online_confirmation_email(application, self.request)
+            else:	
+            	msg = emails.create_confirmation_email(application, self.request)
         try:
             application.confirm()
         except:
@@ -142,7 +145,7 @@ class CancelApplication(LoginRequiredMixin, UserPassesTestMixin, TabsView):
 
 def get_deadline(application):
     last_updated = application.status_update_date
-    if application.status == models.APP_INVITED:
+    if application.status == models.APP_INVITED or application.status == models.APP_INVITED_ONLINE:
         deadline = last_updated + timedelta(days=7)
     else:
         deadline = last_updated + timedelta(days=1)

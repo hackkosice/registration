@@ -83,13 +83,31 @@
                     <h3>When to leave</h3>
                     <p>{{ h_leave }}</p>
                 {% endif %}
+		<p>
+		If you can't physically come to the venue, contact us by an email and you will be able to attend the event online. However, in that case you would miss out the amazing atmosphere and swag so be sure to come if you can!
+		</p>
+                {% include 'include/cancel.html' %}
+            </div>
+
+        {% elif application.is_confirmed_online %}
+
+            <div class="col-md-12">
+                <p>Thank you {{ user.get_full_name }} for confirming your attendance
+                    to {{ h_name }} online edition!</p>
+		<p>
+		Because of the current restrictions regarding COVID-19, we cannot hold an event for 250 hackers as it was originally planned. Therefore, we invite to our venue less people and only those who are actually able to come. Nevertheless, you are invited to join Hack Kosice online!
+		</p>
+
+		<p>
+		We are <strong>not expecting</strong> you to come to the venue physically. If you can physically come to the venue, contact us by an email and you might be able to come to the venue.
+		</p>
                 {% include 'include/cancel.html' %}
             </div>
 
 
         {% elif application.is_invited or application.is_last_reminder %}
             <div class="col-md-12">
-                <div class="alert alert-success ">Congrats! you have been officially invited to {{ h_name }}! Please
+                <div class="alert alert-success ">Congrats! You have been officially invited to {{ h_name }}! Please
                     confirm
                     your attendance as soon as possible.
                 </div>
@@ -101,7 +119,11 @@
                         {% include 'include/deadline_countdown.html' with timeleft=invite_timeleft %}</b>
                 </p>
 
-                {% if h_arrive %}
+		<p>
+		By confirming your application, you are expected to come to our venue on the day of the event. If you can't physically come to the venue, contact us by an email and you will be able to attend the event online. However, in that case you would miss out the amazing atmosphere and swag so be sure to come if you can!
+		</p>
+
+                {%if h_arrive %}
                     <h3>When to arrive</h3>
                     <p>{{ h_arrive }}</p>
                 {% endif %}
@@ -110,12 +132,78 @@
                     <p>{{ h_leave }}</p>
                 {% endif %}
 
-                <div class="col-md-5  no-padding"><a href="{% url 'confirm_app' application.uuid_str %}"
+                <div class="col-md-4"><a href="{% url 'confirm_app' application.uuid_str %}"
                                                     class="btn  btn-success btn-block">Confirm</a>
                 </div>
-                <div class="col-md-offset-2 col-md-5 no-padding"><a href="{% url 'cancel_app' application.uuid_str %}"
+		
+		<div class="col-md-4"><a href="mailto:contact@hackkosice.com"
+                                                    class="btn btn-info btn-block">Write us an email</a>
+                </div>
+
+                <div class="col-md-4"><a href="{% url 'cancel_app' application.uuid_str %}"
                                                     class="btn  btn-danger btn-block">Cancel</a></div>
             </div>
+
+	{% elif application.is_invited_online %}
+            <div class="col-md-12">
+                <div class="alert alert-warning ">Congrats! You have been officially invited to {{ h_name }} online! Please
+                    confirm
+                    your attendance as soon as possible.
+                </div>
+
+		<p>
+		Because of the current restrictions regarding COVID-19, we cannot hold an event for 250 hackers as it was originally planned. Therefore, we invite to our venue less people and only those who are actually able to come. Nevertheless, you are invited to join Hack Kosice online!
+		</p>
+
+		<p>
+		We are <strong>not expecting</strong> you to come to the venue physically. If you can physically come to the venue, contact us by an email and you might be able to come to the venue.
+		</p>
+
+		<p>Respond to this invitation by clicking on the "Confirm" button below. If you really cannot make it,
+                    please let us know by clicking "Cancel". We want as many people as possible to experience the
+                    hackathon!
+                    <b>This invite expires in
+                        {% include 'include/deadline_countdown.html' with timeleft=invite_timeleft %}</b>
+                </p>
+
+                <div class="col-md-4"><a href="{% url 'confirm_app' application.uuid_str %}"
+                                                    class="btn  btn-success btn-block">Confirm</a>
+                </div>
+		
+		<div class="col-md-4"><a href="mailto:contact@hackkosice.com"
+                                                    class="btn btn-info btn-block">Write us an email</a>
+                </div>
+
+                <div class="col-md-4"><a href="{% url 'cancel_app' application.uuid_str %}"
+                                                    class="btn  btn-danger btn-block">Cancel</a></div>
+            </div>
+
+ 
+        {% elif application.is_rejected %}
+
+            <div class="col-md-12">
+		{% include 'include/status.html' %}
+                <p>
+        	Dear {{ user.get_full_name }},
+    		</p>
+    		<p>
+        	First of all, we want to thank you for your application to hack with us at {{ h_name }}
+        	2020. We received a lot of applications from hackers all around the world,
+        	whose passion and enthusiasm for innovation and development is one of the main reasons
+        	why hackathons are such a great place to be!
+    		</p>
+    		<p>
+        	However, after difficult consideration, we regretfully <strong>can not offer you a place at {{ h_name }} 2020</strong>.
+        	The competition to get in was pretty harsh and only small differences decided. Due to 
+        	a large number of applications we are unable to provide you individual feedback.
+        	Please, keep your passion for hacking and make sure to apply for {{ h_name }} 2021!
+    		</p>
+		<p>
+        	If you think your application has improved since the last time you have applied, you can contact us.  
+    		</p>
+                
+            </div>
+
         {% else %}
             <div class="col-md-12">
                 {% include 'include/status.html' %}

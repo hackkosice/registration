@@ -186,8 +186,12 @@
                     <button name="waitlist" class="btn btn-danger btn-block" value="waitlist">Wait list
                     </button>
                 {% endif %}
-                {% if not app.answered_invite or app.is_cancelled %}
-                    <button name="invite" class="btn btn-success btn-block" value="invite">Send invite
+                {% if not app.is_confirmed_online and not app.answered_invite or app.is_cancelled %}
+                    <button name="invite" class="btn btn-success btn-block" value="invite">Send live invite
+                    </button>
+                {% endif %}
+                {% if not app.is_confirmed_online and not app.answered_invite or app.is_cancelled %}
+                    <button name="invite_online" class="btn btn-success btn-block" value="invite_online">Send online invite
                     </button>
                 {% endif %}
                 {% if app.can_be_cancelled %}

@@ -20,8 +20,10 @@ OTHER = 'O'
 APP_PENDING = 'P'
 APP_REJECTED = 'R'
 APP_INVITED = 'I'
+APP_INVITED_ONLINE = 'IO'
 APP_LAST_REMIDER = 'LR'
 APP_CONFIRMED = 'C'
+APP_CONFIRMED_ONLINE = 'CO'
 APP_CANCELLED = 'X'
 APP_ATTENDED = 'A'
 APP_EXPIRED = 'E'
@@ -29,9 +31,11 @@ APP_EXPIRED = 'E'
 STATUS = [
     (APP_PENDING, 'Under review'),
     (APP_REJECTED, 'Wait listed'),
-    (APP_INVITED, 'Invited'),
+    (APP_INVITED, 'Invited live'),
+    (APP_INVITED_ONLINE, 'Invited online'),
     (APP_LAST_REMIDER, 'Last reminder'),
-    (APP_CONFIRMED, 'Confirmed'),
+    (APP_CONFIRMED, 'Confirmed live'),
+    (APP_CONFIRMED_ONLINE, 'Confirmed online'),
     (APP_CANCELLED, 'Cancelled'),
     (APP_ATTENDED, 'Attended'),
     (APP_EXPIRED, 'Expired'),
@@ -257,6 +261,19 @@ class Application(models.Model):
         self.status_update_date = timezone.now()
         self.save()
 
+    def invite_online(self, user):
+        # We can re-invite someone invited
+        if self.status in [APP_CONFIRMED, APP_ATTENDED]:
+            raise ValidationError('Application has already answered invite. '
+                                  'Current status: %s' % self.status)
+        self.status = APP_INVITED_ONLINE
+        if not self.invited_by:
+            self.invited_by = user
+        self.last_invite = timezone.now()
+        self.last_reminder = None
+        self.status_update_date = timezone.now()
+        self.save()
+
     def last_reminder(self):
         if self.status != APP_INVITED:
             raise ValidationError('Reminder can\'t be sent to non-pending '
@@ -287,7 +304,11 @@ class Application(models.Model):
             self.status = APP_CONFIRMED
             self.status_update_date = timezone.now()
             self.save()
-        elif self.status in [APP_CONFIRMED, APP_ATTENDED]:
+        elif self.status in [APP_INVITED_ONLINE]:
+            self.status = APP_CONFIRMED_ONLINE
+            self.status_update_date = timezone.now()
+            self.save()
+        elif self.status in [APP_CONFIRMED, APP_CONFIRMED_ONLINE, APP_ATTENDED]:
             return None
         else:
             raise ValidationError('Unfortunately his application hasn\'t been '
@@ -313,6 +334,9 @@ class Application(models.Model):
     def is_confirmed(self):
         return self.status == APP_CONFIRMED
 
+    def is_confirmed_online(self):
+        return self.status == APP_CONFIRMED_ONLINE
+
     def is_cancelled(self):
         return self.status == APP_CANCELLED
 
@@ -331,6 +355,9 @@ class Application(models.Model):
     def is_invited(self):
         return self.status == APP_INVITED
 
+    def is_invited_online(self):
+        return self.status == APP_INVITED_ONLINE
+
     def is_expired(self):
         return self.status == APP_EXPIRED
 
@@ -344,10 +371,13 @@ class Application(models.Model):
         return self.status == APP_LAST_REMIDER
 
     def can_be_cancelled(self):
-        return self.status == APP_CONFIRMED or self.status == APP_INVITED or self.status == APP_LAST_REMIDER
+        return self.status == APP_CONFIRMED or self.status == APP_INVITED or self.status == APP_LAST_REMIDER or self.status == APP_CONFIRMED_ONLINE or self.status == APP_INVITED_ONLINE
 
     def can_confirm(self):
-        return self.status in [APP_INVITED, APP_LAST_REMIDER]
+        return self.status in [APP_INVITED, APP_LAST_REMIDER, APP_INVITED_ONLINE]
+
+    def can_confirm_online(self):
+        return self.status in [APP_INVITED_ONLINE]
 
     def is_team_closed(self):
         return self.status in [APP_ATTENDED, APP_EXPIRED, APP_REJECTED, APP_CANCELLED]

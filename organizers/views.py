@@ -229,6 +229,8 @@ class ApplicationDetailView(TabsViewMixin, IsExternalMixin, TemplateView):
             add_comment(application, request.user, comment_text)
         elif request.POST.get('invite') and request.user.is_director:
             self.invite_application(application)
+        elif request.POST.get('invite_online') and request.user.is_director:
+            self.invite_application_online(application)
         elif request.POST.get('confirm') and request.user.is_director:
             self.confirm_application(application)
         elif request.POST.get('cancel') and request.user.is_director:
@@ -275,8 +277,17 @@ class ApplicationDetailView(TabsViewMixin, IsExternalMixin, TemplateView):
     def invite_application(self, application):
         try:
             application.invite(self.request.user)
-            messages.success(self.request, "Invite to %s successfully sent" % application.user.email)
+            messages.success(self.request, "Live invite to %s successfully sent" % application.user.email)
             m = emails.create_invite_email(application, self.request)
+            m.send()
+        except ValidationError as e:
+            messages.error(self.request, e.message)
+
+    def invite_application_online(self, application):
+        try:
+            application.invite_online(self.request.user)
+            messages.success(self.request, "Online invite to %s successfully sent" % application.user.email)
+            m = emails.create_online_invite_email(application, self.request)
             m.send()
         except ValidationError as e:
             messages.error(self.request, e.message)

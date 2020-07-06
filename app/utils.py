@@ -149,7 +149,7 @@ def hacker_tabs(user):
     if application:
         l.append(('Application', reverse('application'), False))
 
-    if application and getattr(user, 'reimbursement', None) and settings.REIMBURSEMENT_ENABLED:
+    if application and getattr(user, 'reimbursement', None) and settings.REIMBURSEMENT_ENABLED and not application.is_invited_online() and not application.is_confirmed_online():
         l.append(('Travel', reverse('reimbursement_dashboard'),
                   'Pending' if user.reimbursement.needs_action() else False))
 

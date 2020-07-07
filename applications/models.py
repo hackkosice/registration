@@ -28,6 +28,7 @@ APP_CANCELLED = 'X'
 APP_ATTENDED = 'A'
 APP_EXPIRED = 'E'
 APP_INVITED_IN_MARCH = 'WM'
+APP_SAVED = 'S'
 
 STATUS = [
     (APP_PENDING, 'Under review'),
@@ -40,6 +41,7 @@ STATUS = [
     (APP_CANCELLED, 'Cancelled'),
     (APP_ATTENDED, 'Attended'),
     (APP_EXPIRED, 'Expired'),
+    (APP_SAVED, 'Saved'),
     (APP_INVITED_IN_MARCH, 'Invited in March'),
 ]
 
@@ -352,7 +354,7 @@ class Application(models.Model):
         return self.status == APP_PENDING
 
     def can_be_edit(self):
-        return self.status == APP_PENDING and not self.vote_set.exists() and not utils.is_app_closed()
+        return (self.status == APP_SAVED or self.status == APP_PENDING) and not self.vote_set.exists() and not utils.is_app_closed()
 
     def is_invited(self):
         return self.status == APP_INVITED
@@ -368,6 +370,9 @@ class Application(models.Model):
 
     def is_attended(self):
         return self.status == APP_ATTENDED
+
+    def is_saved(self):
+        return self.status == APP_SAVED
 
     def is_last_reminder(self):
         return self.status == APP_LAST_REMIDER

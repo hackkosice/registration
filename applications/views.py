@@ -165,7 +165,8 @@ class HackerDashboard(LoginRequiredMixin, TabsView):
         try:
             application = models.Application.objects.get(user=self.request.user)
             deadline = get_deadline(application)
-            context.update({'invite_timeleft': deadline - timezone.now()})
+            context.update(
+            {'invite_timeleft': deadline - timezone.now(), 'form': forms.ApplicationForm(instance=application)})
         except:
             # We ignore this as we are okay if the user has not created an application yet
             pass
@@ -173,15 +174,19 @@ class HackerDashboard(LoginRequiredMixin, TabsView):
         return context
 
     def post(self, request, *args, **kwargs):
-        new_application = True
+        new_application = ('submit' in request.POST)
         try:
             form = forms.ApplicationForm(request.POST, request.FILES, instance=request.user.application)
-            new_application = False
+            new_application = new_application and (request.user.application.status == models.APP_SAVED) 
         except:
             form = forms.ApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             application = form.save(commit=False)
             application.user = request.user
+            if 'save' in request.POST:
+                application.status = models.APP_SAVED
+            if 'submit' in request.POST:
+                application.status = models.APP_PENDING
             application.save()
             if new_application:
                 m = emails.create_application_email(application)
@@ -214,16 +219,26 @@ class HackerApplication(LoginRequiredMixin, TabsView):
         return context
 
     def post(self, request, *args, **kwargs):
+        new_application = False
         try:
             form = forms.ApplicationForm(request.POST, request.FILES, instance=request.user.application)
+            new_application = ('submit' in request.POST) and (request.user.application.status == models.APP_SAVED)
         except:
             form = forms.ApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             application = form.save(commit=False)
             application.user = request.user
+            if 'submit' in request.POST:
+                application.status = models.APP_PENDING
             application.save()
-
-            messages.success(request, 'Application changes saved successfully!')
+            if new_application:
+                m = emails.create_application_email(application)
+                m.send()
+                messages.success(request,
+                                 'We have now received your application. '
+                                 'Processing your application will take some time, so please be patient.')
+            else:
+                messages.success(request, 'Application changes saved successfully!')
 
             return HttpResponseRedirect(reverse('application'))
         else:

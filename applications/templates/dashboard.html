@@ -22,7 +22,7 @@
                 <a href="{% url 'send_email_verification' %}" class="btn  btn-success btn-block">Send verification email
                     again</a>
             </div>
-        {% elif not application %}
+        {% elif not application or application.is_saved%}
             <div class="col-md-12">
                 {% if h_app_timeleft %}
                     <div class="alert alert-info">

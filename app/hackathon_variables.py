@@ -34,14 +34,14 @@ HACKATHON_GITHUB_REPO = 'https://github.com/hackkosice/registration/'
 # (OPTIONAL) Applications opening date
 HACKATHON_APP_OPENING = timezone.datetime(2019, 11, 15, 18, 00, tzinfo=timezone.pytz.timezone(TIME_ZONE))
 # (OPTIONAL) Applications deadline
-HACKATHON_APP_DEADLINE = timezone.datetime(2020, 3, 14, 18, 0, tzinfo=timezone.pytz.timezone(TIME_ZONE))
+HACKATHON_APP_DEADLINE = timezone.datetime(2020, 8, 21, 18, 0, tzinfo=timezone.pytz.timezone(TIME_ZONE))
 # (OPTIONAL) When to arrive at the hackathon
 # Registration and Closing ceremony times (make sure we won't need to change them)
-HACKATHON_ARRIVE = 'Registration opens at 9:00 and closes at 9:30 on Saturday, 28 March, ' \
+HACKATHON_ARRIVE = 'Registration opens at 9:00 and closes at 9:30 on Saturday, 5 September, ' \
                    'the opening ceremony starts at 10:00.'
 
 # (OPTIONAL) When to arrive at the hackathon
-HACKATHON_LEAVE = 'Closing ceremony will be held on Sunday, 29 March and is expected to finish by 18.00. ' \
+HACKATHON_LEAVE = 'Closing ceremony will be held on Sunday, 6 September and is expected to finish by 18:00. ' \
                   'The projects demo fair will be held before, on Sunday afternoon.'
 # (OPTIONAL) Hackathon live page
 HACKATHON_LIVE_PAGE = 'https://hackkosice.com/'

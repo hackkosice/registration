@@ -143,13 +143,13 @@ def hacker_tabs(user):
     application = getattr(user, 'application', None)
     l = [('Home', reverse('dashboard'),
           'Invited' if application and user.application.needs_action() else False),]
-    if user.email_verified and application and getattr(settings, 'TEAMS_ENABLED', False) \
+    if user.email_verified and application and not application.is_saved() and getattr(settings, 'TEAMS_ENABLED', False) \
        and not application.is_cancelled():
         l.append(('Team', reverse('teams'), False))
-    if application:
+    if application and not application.is_saved():
         l.append(('Application', reverse('application'), False))
 
-    if application and getattr(user, 'reimbursement', None) and settings.REIMBURSEMENT_ENABLED:
+    if application and not application.is_saved() and getattr(user, 'reimbursement', None) and settings.REIMBURSEMENT_ENABLED and not application.is_invited_online() and not application.is_confirmed_online():
         l.append(('Travel', reverse('reimbursement_dashboard'),
                   'Pending' if user.reimbursement.needs_action() else False))
 

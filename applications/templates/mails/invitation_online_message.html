@@ -1,0 +1,22 @@
+{% extends 'base_email.html' %}
+{% block preheader %}Acceptance email for {{ h_name }}{% endblock %}
+
+{% block content %}
+    <p>
+        Congratulations {{ name }}, you have been officially invited to <b>{{ h_name }}</b> to participate <b>online</b>!
+    </p>
+    <p>
+    Because of the current restrictions regarding COVID-19, we cannot hold an event for 250 hackers as it was originally planned. Therefore, we invite to our venue less people and only those who are actually able to come. Nevertheless, you are invited to join Hack Kosice <strong>online</strong>! 
+    </p>
+    <p>
+        Please note that we are not able to provide you a space physically in the venue.
+    </p>
+    <p>
+        Respond to this invitation by clicking on the "Confirm" link below.
+        <b>Please confirm your spot within 7 days of receiving this email. Otherwise we will give your spot to another
+            hacker on the waitlist.</b>
+    </p>
+    {% include 'mails/include/email_button.html' with text='Confirm' url=confirm_url %}
+    {% include 'mails/include/cancel.html' %}
+    {% include 'mails/include/closing.html' %}
+{% endblock %}

@@ -16,6 +16,15 @@ def create_invite_email(application, request):
     return emails.render_mail('mails/invitation',
                               application.user.email, c)
 
+def create_online_invite_email(application, request):
+    c = {
+        'name': application.user.get_full_name,
+        'confirm_url': str(reverse('confirm_app', request=request, kwargs={'id': application.uuid_str})),
+        'cancel_url': str(reverse('cancel_app', request=request, kwargs={'id': application.uuid_str}))
+    }
+    return emails.render_mail('mails/invitation_online',
+                              application.user.email, c)
+
 def create_application_email(application):
     c = {'name': application.user.get_full_name}
     return emails.render_mail('mails/application_submitted', application.user.email, c)
@@ -23,6 +32,15 @@ def create_application_email(application):
 def create_reject_email(application, request):
     c = {'name': application.user.get_full_name}
     return emails.render_mail('mails/waitlist',
+                              application.user.email, c)
+
+def create_online_confirmation_email(application, request):
+    c = {
+        'name': application.user.get_full_name,
+        'token': application.uuid_str,
+        'cancel_url': str(reverse('cancel_app', request=request, kwargs={'id': application.uuid_str})),
+    }
+    return emails.render_mail('mails/confirmation_online',
                               application.user.email, c)
 
 

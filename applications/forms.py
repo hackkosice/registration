@@ -510,7 +510,7 @@ class ApplicationForm(OverwriteOnlyModelFormMixin, BetterModelForm):
             'job_interest': 'Are you looking for a job?',
             'job_type': 'What type of job would you prefer?',
             'spirit_animal': 'What\'s your spirit animal and why?',
-            'origin': 'From which city are you planning to travel to %s?' % settings.HACKATHON_NAME,
+            'origin': 'Where will you be during the hackathon?',
             'description': 'Why are you excited about %s?' % settings.HACKATHON_NAME,
             'projects': 'What projects have you worked on?',
             'resume': 'Upload your resume',
@@ -573,7 +573,7 @@ class AmbassadorForm(OverwriteOnlyModelFormMixin, BetterModelForm):
         }
 
         labels = {
-            'origin': 'From which city are you planning to travel to %s?' % settings.HACKATHON_NAME,
+            'origin': 'Where will you be during the hackathon?',
             'tshirt_size': 'What\'s your t-shirt size?',
         }
 
